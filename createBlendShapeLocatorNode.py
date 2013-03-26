@@ -170,3 +170,4 @@ addLocatorToBlendShapeBtn.setCommand(addLocatorToBlendShape)
 newBlendShapeLocatorBtn.setCommand(newBlendShapeLocator)
 mirrorBlendShapeLocatorBtn.setCommand(mirrorBlendShapeLocator)
 win.show()
+
