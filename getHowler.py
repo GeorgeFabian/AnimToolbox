@@ -11,7 +11,7 @@ def getScriptsPath():
             return p
 
 def getPluginsPath():
-  for p in util.getEnv("MAYA_PLUG_IN_PATH").split(":"):
+	for p in util.getEnv("MAYA_PLUG_IN_PATH").split(":"):
 	    if "maya/plug-ins" in p and "Shared" in p:
 	        return p
 		        
@@ -19,7 +19,7 @@ scriptsPath = getScriptsPath()
 pluginsPath = getPluginsPath()
 howlerUrl = "http://www.colinstanton.com/stantco/wp-content/uploads/2013/04/howlerPackage.zip"
 howlerDir = "%s/data/" % workspace.path
-if not os.path.exists(howlerDir)
+if not os.path.exists(howlerDir):
 	os.makedirs(howlerDir)
 
 howlerFileName = "howlerPackage.zip"
@@ -34,10 +34,10 @@ httplib2Path = "%s%s" % (howlerDir,"httplib2")
 oauth2Path = "%s%s" % (howlerDir,"oauth2")
 posterPath = "%s%s" % (howlerDir,"poster")
 
-shutil.copy(cmdPath,pluginsPath)
-shutil.copy(httplib2Path,scriptsPath)
-shutil.copy(oauth2Path,scriptsPath)
-shutil.copy(posterPath,scriptsPath)
+shutil.move(cmdPath,pluginsPath)
+shutil.move(httplib2Path,scriptsPath)
+shutil.move(oauth2Path,scriptsPath)
+shutil.move(posterPath,scriptsPath)
 
 loadPlugin("howlerCmd.py")
 unloadPlugin("howlerCmd.py")
