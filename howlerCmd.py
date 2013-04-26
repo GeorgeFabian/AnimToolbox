@@ -324,8 +324,6 @@ If you have any questions about Howler or Maya development in general, feel free
         self.sender.setText("")
         self.password.setText("")
         self.recipientList.removeAll()
-        # self.recipientList,e=True,label="%d" % len(self.recipientList.getAllItems())
-        self.recipientList.label("TEST")
         self.tumblrUserEmail.setText("")
         self.oauthTokenField.setText("")
         self.oauthTokenSecretField.setText("")
