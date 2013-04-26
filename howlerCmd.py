@@ -429,9 +429,13 @@ If you have any questions about Howler or Maya development in general, feel free
         filePaths = self.files.getAllItems()
         email = checkBox(self.emailCheckBox,q=True,v=True)
         tumblr = checkBox(self.tumblrCheckBox,q=True,v=True)
-        tumblrAuth = self.getCredentials(tumblrPost())
         self.saveUserInfo()
 
+        if not email and not tumblr:
+            confirmDialog( title='No options checked', 
+                             message='Please check Send Email, Post to Tumblr, or both.', 
+                             button=['Ok'])
+            return
         if len(filePaths) > 0:
             
             if email:
@@ -441,6 +445,7 @@ If you have any questions about Howler or Maya development in general, feel free
                        self.password.getText(),
                        filePaths)
             if tumblr:
+                tumblrAuth = self.getCredentials(tumblrPost())
                 self.postToTumblr(tumblrAuth,filePaths)
         else:
             sendNoFiles = confirmDialog( title='Confirm', 
