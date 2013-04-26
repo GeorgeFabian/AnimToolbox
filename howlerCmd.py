@@ -458,7 +458,13 @@ If you have any questions about Howler or Maya development in general, feel free
                 return
 
     def savePlayblast(self,*args):
-        path = playblast(p=100,filename=sceneName()+str(len(self.files.getAllItems()))+".mov",fo=True)
+        selectedFrames = timeControl("timeControl1",q=True,rng=True).split(":")
+        start = int(selectedFrames[0][1:])
+        end = int(selectedFrames[1][:-1])
+        if end - start > 1:
+            path = playblast(p=50,st=start,et=end-1,filename=sceneName()+str(len(self.files.getAllItems()))+".mov",fo=True)
+        else:
+            path = playblast(p=50,filename=sceneName()+str(len(self.files.getAllItems()))+".mov",fo=True)
         return path
 
     def addExternalFile(self,*args):
@@ -498,6 +504,9 @@ If you have any questions about Howler or Maya development in general, feel free
 
         self.files.append(path)
 
+    def getFileSizeInMB(self,file,*args):
+        return int(os.path.getsize(file) * 0.0009765625 * 0.0009765625)
+
     def postToTumblr(self,session,filePaths,*args):
         photos = []
         videos = []
@@ -506,10 +515,25 @@ If you have any questions about Howler or Maya development in general, feel free
             for f in files:
                 filename = f[0].split(".")[-2]
                 extension = f[0].split(".")[-1]
+                print self.getFileSizeInMB(f[0]) < 100
                 if extension == "mov":
-                    videos.append(f)
+                    if not self.getFileSizeInMB(f[0]) < 100:    
+                        confirmDialog( title='File is too large', 
+                             messageAlign='center',
+                             message='The file, %s, exceeds the 100MB limit for video uploads' % filename, 
+                             button=['Ok'])
+                        return
+                    else:
+                        videos.append(f)
                 else:
-                    photos.append(f)
+                    if not self.getFileSizeInMB(f[0]) < 25:    
+                        confirmDialog( title='File is too large', 
+                             messageAlign='center',
+                             message='The file, %s, exceeds the 25MB limit for photo uploads' % filename, 
+                             button=['Ok'])
+                        return
+                    else:
+                        photos.append(f)
 
         session.postContent(photos,"photo")
         session.postContent(videos,"video")
