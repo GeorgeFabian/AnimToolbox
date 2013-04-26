@@ -256,10 +256,10 @@ If you have any questions about Howler or Maya development in general, feel free
                 
         try:
             self.emailSession.login(sender, password)
-            confirmDialog( title='Login Successful!',
+            loginDialog = confirmDialog( title='Login Successful!',
                             button=['Ok'])
         except:
-            confirmDialog( title='Login Failed', 
+            loginFailed = confirmDialog( title='Login Failed', 
                          message='Username and Password not accepted.', 
                          button=['Ok'])
 
