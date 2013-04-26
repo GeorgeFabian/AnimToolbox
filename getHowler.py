@@ -19,16 +19,20 @@ scriptsPath = getScriptsPath()
 pluginsPath = getPluginsPath()
 print scriptsPath
 print pluginsPath
-howlerUrl = "http://www.colinstanton.com/stantco/wp-content/uploads/2013/04/howlerPackage.zip"
+howlerUrl = "https://raw.github.com/GeorgeFabian/AnimToolbox/master/howlerCmd.py"
+modulesUrl = "http://www.colinstanton.com/stantco/wp-content/uploads/2013/04/howlerPackage.zip"
 howlerDir = "%s/data/" % workspace.path
 if not os.path.exists(howlerDir):
 	os.makedirs(howlerDir)
 
-howlerFileName = "howlerPackage.zip"
+modulesFileName = "howlerPackage.zip"
+howlerFileName = "howlerCmd.py"
+modulesPath = "%s%s" % (howlerDir,modulesFileName)
 howlerPath = "%s%s" % (howlerDir,howlerFileName)
+urllib.urlretrieve(modulesUrl,modulesPath)
 urllib.urlretrieve(howlerUrl,howlerPath)
 
-howlerZip = zipfile.ZipFile(howlerPath)
+howlerZip = zipfile.ZipFile(modulesPath)
 howlerZip.extractall(howlerDir)
 
 cmdPath = "%s%s" % (howlerDir,"howlerCmd.py")
@@ -58,9 +62,7 @@ if os.path.exists(posterDestinationPath):
 shutil.move(posterPath,scriptsPath)
 
 
-## I have no idea why this works...
+## Add this bit to your shelf to create a button for Howler.
 loadPlugin("howlerCmd.py")
 from pymel.core import *
 howler() 
-
-
