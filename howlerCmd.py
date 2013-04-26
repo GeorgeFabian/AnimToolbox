@@ -178,6 +178,21 @@ You can delete files from the list by selecting them in the list and clicking De
 Once you're satisfied with the contents of the update, click Send/Post Update to share your work with the world!"""
         scrollField(p="Help",ww=True,ed=False,tx=helpText)
         button(label="Reset User Info",c=self.resetUserInfo)
+        # END HELP LAYOUT
+        #################
+
+        ##############
+        # ABOUT LAYOUT
+
+        frameLayout("About",label="About",p="tabs") 
+
+        aboutText = """My name's Colin Stanton, and I'm a recent Computer Science/Digital Art dual major from Northeastern University in Boston!
+
+If you have any questions about Howler or Maya development in general, feel free to shoot me an email at contact@colinstanton.com!
+        """
+        scrollField(p="About",ww=True,ed=False,tx=aboutText)
+        # END ABOUT LAYOUT
+        ##################
 
         ############
         ## HOWLER LAYOUT
