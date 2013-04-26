@@ -1,3 +1,7 @@
+###
+# www.colinstanton.com
+###
+
 import os, re
 import sys
 import smtplib
@@ -237,6 +241,8 @@ Once you're satisfied with the contents of the update, click Send/Post Update to
                 
         try:
             self.emailSession.login(sender, password)
+            confirmDialog( title='Login Successful!',
+                            button=['Ok'])
         except:
             confirmDialog( title='Login Failed', 
                          message='Username and Password not accepted.', 
@@ -480,16 +486,54 @@ Once you're satisfied with the contents of the update, click Send/Post Update to
     def postToTumblr(self,session,filePaths,*args):
         photos = []
         videos = []
-        for f in filePaths:
-            filename = f.split(".")[-2]
-            extension = f.split(".")[-1]
-            if extension == "mov":
-                videos.append(f)
-            else:
-                photos.append(f)
+        if len(filePaths) >= 1:
+            files = self.addCaptions(filePaths)
+            for f in files:
+                filename = f[0].split(".")[-2]
+                extension = f[0].split(".")[-1]
+                if extension == "mov":
+                    videos.append(f)
+                else:
+                    photos.append(f)
 
         session.postContent(photos,"photo")
         session.postContent(videos,"video")
+
+
+    def addCaptions(self,filePaths,*args):
+        files = []
+        for i in range(len(filePaths)):
+            img = filePaths[i]
+            captionWindow = window('captionWindow') 
+            pLayout = rowColumnLayout() 
+            image( image=img) 
+
+            showWindow( captionWindow ) 
+
+            captionPrompt = promptDialog(
+                            title='Add a caption?',
+                            message='Caption:',
+                            button=['Yes', 'Caption the rest', 'No', 'No more captions'])
+
+            caption = promptDialog(q=True,text=True)
+
+            if captionPrompt == "Yes":
+                files.append((img,caption))
+                deleteUI('captionWindow')
+            elif captionPrompt == "Caption the rest":
+                for img in filePaths[i:]:
+                    files.append((img,caption))
+                deleteUI('captionWindow')
+                break
+            elif captionPrompt == "No":
+                deleteUI('captionWindow')
+                continue
+            elif captionPrompt == "No more captions":
+                for img in filePaths[i:]:
+                    files.append((img,""))
+                deleteUI('captionWindow')
+                break
+        return files
 
     def sendEmail(self,sender,recipients,message,password,filePaths):
         start = time.time()
@@ -545,7 +589,7 @@ Once you're satisfied with the contents of the update, click Send/Post Update to
                 path = filePaths[i]
                 print "FILE   " + path
                 file = open(path,"rb").read()
-                emailZip.write(path,compress_type=zipfile.ZIP_DEFLATED)
+                emailZip.write(path,arcname=os.path.basename(path),compress_type=zipfile.ZIP_DEFLATED)
 
             print emailZipPath
 
@@ -564,7 +608,7 @@ Once you're satisfied with the contents of the update, click Send/Post Update to
         part = MIMEText('text', "plain")
         part.set_payload(message)
         msg.attach(part)
-
+        print "---Sending Email with %d file(s)---" % len(filePaths)
         self.emailSession.sendmail(sender, recipient, msg.as_string())
         # self.emailSession.quit()
         self.files.removeAll()
@@ -628,9 +672,10 @@ class tumblrPost():
     def getUrl(self):
         return self.userData["response"]["user"]["blogs"][0]["url"][7:-1]
 
-    def postContent(self,filepaths,contentType,tags="",caption=""):
-        for content in filepaths:
-         
+    def postContent(self,files,contentType,tags=""):
+        for f in files:
+            content = f[0]
+            caption = f[1]
             print "---Posting %s file---" % contentType
             date  = time.gmtime(os.path.getmtime(content))
             post = {
